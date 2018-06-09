@@ -1,2 +1,4 @@
 # PHPStorm binaries
 .idea
+# Ansible tmp files
+playbook.retry

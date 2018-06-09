@@ -1,0 +1,12 @@
+---
+- name: run the playbook roles on the localhost
+  hosts: localhost
+  vars:
+      laravel_root_dir: /var/www/laravel
+      laravel_repo: git@github.com:guillaume-rodrigues/happystock.git
+      laravel_composer_options: '--no-dev --optimize-autoloader --no-interaction'
+      ansible_ssh_user: root
+  roles:
+    - php7
+    - composer
+    - laravel5

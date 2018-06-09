@@ -1,0 +1,60 @@
+# Deployment role for Laravel4 apps.
+# Brought to you by Blacklight - http://www.blacklight.co.za/.
+# Developer: Zander Janse van Rensburg <zjvren@geevcookie.com>
+# License: MIT
+---
+- name: Create deployment directory.
+  include: directory.yml
+
+- name: Deploy the code.
+  include: deploy.yml
+
+- name: Cleanup on deployment failure.
+  shell: rm -fr {{ laravel_root_dir }}/releases/{{ release_version.stdout }}
+  when: deployed is failed
+
+- name: Check if processing needs to continue.
+  fail: 
+    msg: Code could not be deployed!
+  when: deployed is failed
+
+- name: Create symlinks.
+  include: symlinks.yml
+
+- name: Cleanup on symlinks failure.
+  shell: rm -fr {{ laravel_root_dir }}/releases/{{ release_version.stdout }}
+  when: symlinks_created is failed
+
+- name: Check if processing needs to continue.
+  fail: 
+    msg: Symlinks could not be created!
+  when: symlinks_created is failed
+
+- name: Run Composer.
+  include: composer.yml
+
+- name: Cleanup on Composer failure.
+  shell: rm -fr {{ laravel_root_dir }}/releases/{{ release_version.stdout }}
+  when: composer_install_complete is failed
+
+- name: Check if processing needs to continue.
+  fail: 
+    msg: Composer install failed!
+  when: composer_install_complete is failed
+
+- name: Create symlink to newest release.
+  file: state=link src={{ laravel_root_dir }}/releases/{{ release_version.stdout }} path={{ laravel_root_dir }}/current
+  register: current_symlink
+  ignore_errors: true
+
+- name: Cleanup on final steps failure.
+  shell: rm -fr {{ laravel_root_dir }}/releases/{{ release_version.stdout }}
+  when: current_symlink is failed
+
+- name: Check if processing needs to continue.
+  fail: 
+    msg: Could not finish off final steps!
+  when: current_symlink is failed
+
+- name: Run cleanup of old releases.
+  shell: ls -dr {{ laravel_root_dir }}/releases/*  is  tail -n +{{ laravel_releases + 1 }}  is  xargs rm -fr

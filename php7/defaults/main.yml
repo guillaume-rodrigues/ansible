@@ -1,0 +1,59 @@
+---
+php_packages:
+  - php7.1-common
+  - php7.1-cli
+  - php7.1-intl
+  - php7.1-curl
+  - php7.1-cgi
+  - php7.1-fpm
+  - php7.1-mysql
+  - php7.1-gd
+  - php7.1-mcrypt
+  - php7.1-posix
+  - php7.1-xml
+  - php7.1-zip
+  - php7.1-xmlreader
+  - php7.1-opcache
+  - php7.1-json
+  - php7.1-dom
+  - php7.1-phar
+  - php7.1-mbstring
+  - php7.1-pdo
+  - php7.1-pdo-mysql
+  - php7.1-pdo-sqlite
+  - php7.1-soap
+  - php7.1-bcmath
+  - php7.1-gettext
+  - php7.1-iconv
+  - php7.1-ctype
+
+php_timezone: Europe/Paris
+php_upload_max_filesize: "20M"
+php_post_max_size: "20M"
+php_memory_limit: "512M"
+php_max_execution_time: 60
+
+php_errors: "On"
+php_error_reporting: "E_ALL & ~E_DEPRECATED & ~E_STRICT"
+
+php_log_level: "notice"
+php_log_errors: "on"
+
+php_pm: "dynamic"
+php_pm_max_children: 5
+php_pm_start_servers: 2
+php_pm_min_spare_servers: 1
+php_pm_max_spare_servers: 3
+php_pm_max_requests: 500
+
+php_listen: "/run/php/php7.1-fpm.sock"
+php_user: "www-data"
+php_group: "www-data"
+php_log_file: "/var/log/fpm-php.www.log"
+
+php_pools:
+  - name: www
+    listen: "/run/php/php7.1-fpm.sock"
+    user: "www-data"
+    group: "www-data"
+    log: "/var/log/fpm-php.www.log"
